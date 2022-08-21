@@ -23,3 +23,5 @@ app.use(morgan("common"));
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoute);
+
+// TODO: Add socket code

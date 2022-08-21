@@ -11,12 +11,6 @@ router.post(
 			if (!firstName || !lastName || !email || !password) {
 				throw Error("Invalid or missing parameters...");
 			}
-			const user: IAccountRegistration = await Account.findOne({
-				email: email,
-			});
-			if (user) {
-				throw Error("Email current in use...");
-			}
 
 			const salt = await bcrypt.genSalt(10);
 			const encryptedPassword = await bcrypt.hash(password, salt);
@@ -84,3 +78,5 @@ router.post(
 	}
 );
 module.exports = router;
+
+// TODO: Add endpoint for getting user, deleting user, updating user
