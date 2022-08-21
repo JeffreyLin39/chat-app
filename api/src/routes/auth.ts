@@ -5,12 +5,9 @@ const router = require("express").Router();
 const Account = require("../models/account");
 router.post(
 	"/register",
-	async (
-		req: Request<unknown, unknown, unknown, IAccountRegistration>,
-		res: Response
-	) => {
+	async (req: Request<unknown, IAccountRegistration>, res: Response) => {
 		try {
-			const { firstName, lastName, email, password } = req.query;
+			const { firstName, lastName, email, password } = req.body;
 			if (!firstName || !lastName || !email || !password) {
 				throw Error("Invalid or missing parameters...");
 			}
@@ -51,12 +48,9 @@ router.post(
 
 router.post(
 	"/login",
-	async (
-		req: Request<unknown, unknown, unknown, IAccountLogin>,
-		res: Response
-	) => {
+	async (req: Request<unknown, IAccountLogin>, res: Response) => {
 		try {
-			const { email, password } = req.query;
+			const { email, password } = req.body;
 			if (!email || !password) {
 				throw Error("Invalid or missing parameters...");
 			}
@@ -73,7 +67,7 @@ router.post(
 						res.status(200).json({
 							status: 200,
 							message: "Action accepted",
-							data: { UID: response._id.toString() },
+							data: { UID: user._id.toString() },
 						});
 					} else {
 						throw Error("Password or email is incorrect...");
