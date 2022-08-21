@@ -31,16 +31,20 @@ router.post(
 			});
 			account
 				.save()
-				.then(() => {
-					res.status(200).json({ status: 200, message: "Action accepted" });
+				.then((response: any) => {
+					res.status(200).json({
+						status: 200,
+						message: "Action accepted",
+						data: { UID: response._id.toString() },
+					});
 				})
 				.catch((error: any | unknown) => {
 					console.error(error);
-					res.status(500).json({ status: 500, message: error });
+					res.status(500).json({ status: 500, message: error.toString() });
 				});
 		} catch (error: any | unknown) {
 			console.error(error);
-			res.status(400).json({ status: 400, message: error });
+			res.status(400).json({ status: 400, message: error.toString() });
 		}
 	}
 );
@@ -66,18 +70,22 @@ router.post(
 				.compare(password, user.password)
 				.then((response: any) => {
 					if (response) {
-						res.status(200).json({ status: 200, message: "Action accepted" });
+						res.status(200).json({
+							status: 200,
+							message: "Action accepted",
+							data: { UID: response._id.toString() },
+						});
 					} else {
 						throw Error("Password or email is incorrect...");
 					}
 				})
 				.catch((error: any | unknown) => {
 					console.log(error);
-					res.status(400).json({ status: 400, message: error });
+					res.status(400).json({ status: 400, message: error.toString() });
 				});
 		} catch (error: any | unknown) {
 			console.error(error);
-			res.status(400).json({ status: 400, message: error });
+			res.status(400).json({ status: 400, message: error.toString() });
 		}
 	}
 );
