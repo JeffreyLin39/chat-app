@@ -1,4 +1,4 @@
-import { accountRegistration, accountLogin } from "../interface";
+import { IAccountRegistration, IAccountLogin } from "../interfaces/accounts";
 import e, { Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const router = require("express").Router();
@@ -6,7 +6,7 @@ const Account = require("../models/account");
 router.post(
 	"/register",
 	async (
-		req: Request<unknown, unknown, unknown, accountRegistration>,
+		req: Request<unknown, unknown, unknown, IAccountRegistration>,
 		res: Response
 	) => {
 		try {
@@ -14,7 +14,9 @@ router.post(
 			if (!firstName || !lastName || !email || !password) {
 				throw Error("Invalid or missing parameters...");
 			}
-			const user: accountRegistration = await Account.findOne({ email: email });
+			const user: IAccountRegistration = await Account.findOne({
+				email: email,
+			});
 			if (user) {
 				throw Error("Email current in use...");
 			}
@@ -46,7 +48,7 @@ router.post(
 router.post(
 	"/login",
 	async (
-		req: Request<unknown, unknown, unknown, accountLogin>,
+		req: Request<unknown, unknown, unknown, IAccountLogin>,
 		res: Response
 	) => {
 		try {
@@ -54,7 +56,9 @@ router.post(
 			if (!email || !password) {
 				throw Error("Invalid or missing parameters...");
 			}
-			const user: accountRegistration = await Account.findOne({ email: email });
+			const user: IAccountRegistration = await Account.findOne({
+				email: email,
+			});
 			if (!user) {
 				throw Error("Password or email is incorrect...");
 			}

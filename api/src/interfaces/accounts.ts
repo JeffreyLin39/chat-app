@@ -1,11 +1,11 @@
-export interface accountRegistration {
+export interface IAccountRegistration {
 	firstName: string;
 	lastName: string;
 	email: string;
 	password: string;
 }
 
-export interface accountLogin {
+export interface IAccountLogin {
 	email: string;
 	password: string;
 }
