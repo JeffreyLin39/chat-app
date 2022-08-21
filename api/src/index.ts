@@ -4,6 +4,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
+const groupsRoute = require("./routes/groups");
 
 const app = express();
 const port = 8080;
@@ -23,5 +24,6 @@ app.use(morgan("common"));
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/groups", groupsRoute);
 
 // TODO: Add socket code

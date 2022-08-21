@@ -8,6 +8,7 @@ const accountSchema = new Schema(
 		email: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
 		chat: { type: [String], required: true },
+		profilePicture: { type: String },
 	},
 	{ timestamps: true }
 );

@@ -1,5 +1,5 @@
 import { IAccountRegistration, IAccountLogin } from "../interfaces/accounts";
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const router = require("express").Router();
 const Account = require("../models/account");
@@ -15,9 +15,9 @@ router.post(
 			const salt = await bcrypt.genSalt(10);
 			const encryptedPassword = await bcrypt.hash(password, salt);
 			const account = new Account({
-				firstName: firstName,
-				lastName: lastName,
-				email: email,
+				firstName,
+				lastName,
+				email,
 				password: encryptedPassword,
 				chat: [],
 			});
@@ -62,7 +62,7 @@ router.post(
 						res.status(200).json({
 							status: 200,
 							message: "Action accepted",
-							data: { UID: user._id.toString() },
+							data: { user },
 						});
 					} else {
 						throw Error("Password or email is incorrect...");
@@ -83,16 +83,18 @@ module.exports = router;
 router.get("/getAccount/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const account = await Account.findOne({ _id: id });
-		if (account) {
-			res.status(200).json({
-				status: 400,
-				message: "Action accepted",
-				data: { account: account },
+		Account.findOne({ _id: id })
+			.then((response: any) => {
+				res.status(200).json({
+					status: 400,
+					message: "Action accepted",
+					data: { account: response },
+				});
+			})
+			.catch((error: any | unknown) => {
+				console.error(error);
+				res.status(400).json({ status: 400, message: error.toString() });
 			});
-		} else {
-			throw Error("Invalid parameters or account not found...");
-		}
 	} catch (error: any | unknown) {
 		console.error(error);
 		res.status(400).json({ status: 400, message: error.toString() });
@@ -102,15 +104,17 @@ router.get("/getAccount/:id", async (req: Request, res: Response) => {
 router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const deleted = await Account.findByIdAndDelete(id);
-		if (deleted) {
-			res.status(200).json({
-				status: 400,
-				message: "Action accepted",
+		Account.findByIdAndDelete(id)
+			.then(() => {
+				res.status(200).json({
+					status: 400,
+					message: "Action accepted",
+				});
+			})
+			.catch((error: any | unknown) => {
+				console.error(error);
+				res.status(400).json({ status: 400, message: error.toString() });
 			});
-		} else {
-			throw Error("Invalid parameters or account not found...");
-		}
 	} catch (error: any | unknown) {
 		console.error(error);
 		res.status(400).json({ status: 400, message: error.toString() });
@@ -126,29 +130,32 @@ router.put("/updateAccount/:id", async (req: Request, res: Response) => {
 			const salt = await bcrypt.genSalt(10);
 			encryptedPassword = await bcrypt.hash(password, salt);
 		}
-		const updated = await Account.updateOne(
+		Account.updateOne(
 			{ _id: id },
 			{
 				$set: {
-					firstName: firstName,
-					lastName: lastName,
-					email: email,
+					firstName,
+					lastName,
+					email,
 					password: encryptedPassword,
 				},
 			}
-		);
-		if (updated) {
-			res.status(200).json({
-				status: 400,
-				message: "Action accepted",
+		)
+			.then(() => {
+				res.status(200).json({
+					status: 400,
+					message: "Action accepted",
+				});
+			})
+			.catch((error: any | unknown) => {
+				console.error(error);
+				res.status(400).json({
+					status: 400,
+					message: error.toString(),
+				});
 			});
-		} else {
-			throw Error("Invalid parameters or account not found...");
-		}
 	} catch (error: any | unknown) {
 		console.error(error);
 		res.status(400).json({ status: 400, message: error.toString() });
 	}
 });
-
-// TODO: Add endpoint for getting user, deleting user, updating user
