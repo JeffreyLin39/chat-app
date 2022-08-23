@@ -5,7 +5,7 @@ interface ILoginProps {}
 const Login: React.FunctionComponent<ILoginProps> = (
 	props: React.PropsWithChildren<ILoginProps>
 ) => {
-	return <div>Login</div>;
+	return <div>Register</div>;
 };
 
 export default Login;
