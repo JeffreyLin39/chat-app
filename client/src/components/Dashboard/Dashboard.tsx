@@ -1,10 +1,7 @@
 import * as React from "react";
 
-interface IDashboardProps {}
-
-const Dashboard: React.FunctionComponent<IDashboardProps> = (
-	props: React.PropsWithChildren<IDashboardProps>
-) => {
+const Dashboard: React.FunctionComponent = () => {
+	//TODO: show loading screen if login is false
 	return <div>Dashboard</div>;
 };
 

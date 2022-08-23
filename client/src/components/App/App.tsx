@@ -1,11 +1,15 @@
+// React
 import * as React from "react";
+// React router
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// Context
 import { AuthProvider } from "../../store/Auth.provider";
+import { store } from "../../store/Auth.store";
+import { Provider } from "react-redux";
+// Components
 import Dashboard from "../Dashboard";
 import Login from "../Login";
 import Register from "../Register";
-import { store } from "../../store/Auth.store";
-import { Provider } from "react-redux";
 interface IAppProps {}
 
 const App: React.FunctionComponent<IAppProps> = (

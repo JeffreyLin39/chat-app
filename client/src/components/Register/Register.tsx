@@ -1,10 +1,6 @@
 import * as React from "react";
 
-interface ILoginProps {}
-
-const Login: React.FunctionComponent<ILoginProps> = (
-	props: React.PropsWithChildren<ILoginProps>
-) => {
+const Login: React.FunctionComponent = () => {
 	return <div>Register</div>;
 };
 
