@@ -1,5 +1,7 @@
 // React
 import * as React from "react";
+// React Router
+import { useNavigate } from "react-router-dom";
 // Material UI
 import { Box, TextField, Typography, Button } from "@mui/material";
 // Styles
@@ -16,26 +18,34 @@ import { useDispatch } from "react-redux";
 import { loadLogin } from "../../store/Auth.reducer";
 
 const Login: React.FunctionComponent = () => {
+	const navigate = useNavigate();
 	const [email, setEmail] = React.useState<string>("");
 	const [password, setPassword] = React.useState<string>("");
 	const [error, setError] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setError(false);
 		setEmail(event.target.value);
 	};
 
 	const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setError(false);
 		setPassword(event.target.value);
 	};
 
-	const logIn = () => {
+	const login = async () => {
 		if (process.env.REACT_APP_BASE_API_URL) {
-			fetch(`${process.env.REACT_BASE_API_URL}/auth/login`, {
+			fetch(`${process.env.REACT_APP_BASE_API_URL}/auth/login`, {
 				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify({ email, password }),
 			})
 				.then((response: any) => {
 					if (response.status === 200) {
+						navigate("/");
 						dispatch(loadLogin(true));
 					} else {
 						setError(true);
@@ -74,12 +84,19 @@ const Login: React.FunctionComponent = () => {
 				/>
 				<Button
 					sx={buttonStyles}
-					onClick={logIn}
-					disabled={email.length === 0 || password.length === 0}
+					onClick={login}
+					disabled={email.length === 0 || password.length === 0 || error}
 				>
 					Login
 				</Button>
-				<Typography variant="h6" component="span" sx={passwordStyles}>
+				<Typography
+					variant="h6"
+					component="span"
+					sx={passwordStyles}
+					onClick={() => {
+						navigate("/register");
+					}}
+				>
 					Create an Account
 				</Typography>
 			</Box>

@@ -14,7 +14,7 @@ export const innerboxStyles = {
 	alignItems: "center",
 	justifyContent: "center",
 	width: "25%",
-	height: "50%",
+	height: "auto",
 	border: "3px solid #3262a8",
 	borderRadius: "20px",
 	background: "#FFFFFF",

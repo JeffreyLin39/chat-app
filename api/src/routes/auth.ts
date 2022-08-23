@@ -45,6 +45,7 @@ router.post(
 	"/login",
 	async (req: Request<unknown, IAccountLogin>, res: Response) => {
 		try {
+			console.log(req);
 			const { email, password } = req.body;
 			if (!email || !password) {
 				throw Error("Invalid or missing parameters...");
