@@ -45,7 +45,6 @@ router.post(
 	"/login",
 	async (req: Request<unknown, IAccountLogin>, res: Response) => {
 		try {
-			console.log(req);
 			const { email, password } = req.body;
 			if (!email || !password) {
 				throw Error("Invalid or missing parameters...");
@@ -79,7 +78,6 @@ router.post(
 		}
 	}
 );
-module.exports = router;
 
 router.get("/getAccount/:id", async (req: Request, res: Response) => {
 	try {
@@ -160,3 +158,28 @@ router.put("/updateAccount/:id", async (req: Request, res: Response) => {
 		res.status(400).json({ status: 400, message: error.toString() });
 	}
 });
+
+router.get("/searchUser", async (req: Request, res: Response) => {
+	try {
+		const { searchQuery } = req.query;
+
+		Account.find({ email: new RegExp(`^${searchQuery}`, "i") })
+			.then((result: any) => {
+				res
+					.status(200)
+					.json({ status: 200, message: "Action accepted", data: result });
+			})
+			.catch((error: any | unknown) => {
+				console.error(error);
+				res.status(400).json({
+					status: 400,
+					message: error.toString(),
+				});
+			});
+	} catch (error: any | unknown) {
+		console.error(error);
+		res.status(400).json({ status: 400, message: error.toString() });
+	}
+});
+
+module.exports = router;

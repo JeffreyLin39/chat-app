@@ -15,7 +15,7 @@ import {
 } from "./Register.styles";
 // Stores
 import { useDispatch } from "react-redux";
-import { loadLogin } from "../../store/Auth.reducer";
+import { loadLogin, loadUser } from "../../store/Auth.reducer";
 
 const Register: React.FunctionComponent = () => {
 	const navigate = useNavigate();
@@ -50,7 +50,7 @@ const Register: React.FunctionComponent = () => {
 		setPassword(event.target.value);
 	};
 
-	const login = async () => {
+	const register = async () => {
 		if (process.env.REACT_APP_BASE_API_URL) {
 			fetch(`${process.env.REACT_APP_BASE_API_URL}/auth/register`, {
 				method: "POST",
@@ -64,9 +64,17 @@ const Register: React.FunctionComponent = () => {
 					if (response.status === 200) {
 						navigate("/");
 						dispatch(loadLogin(true));
+						return response.json();
 					} else {
 						setError(true);
 					}
+				})
+				.catch((error: any | unknown) => {
+					setError(true);
+					console.error(error);
+				})
+				.then((response) => {
+					dispatch(loadUser(response.data.user));
 				})
 				.catch((error: any | unknown) => {
 					setError(true);
@@ -136,7 +144,7 @@ const Register: React.FunctionComponent = () => {
 				/>
 				<Button
 					sx={buttonStyles}
-					onClick={login}
+					onClick={register}
 					disabled={email.length === 0 || password.length === 0 || error}
 				>
 					Register

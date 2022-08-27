@@ -15,7 +15,7 @@ import {
 } from "./Login.styles";
 // Stores
 import { useDispatch } from "react-redux";
-import { loadLogin } from "../../store/Auth.reducer";
+import { loadLogin, loadUser } from "../../store/Auth.reducer";
 
 const Login: React.FunctionComponent = () => {
 	const navigate = useNavigate();
@@ -47,9 +47,17 @@ const Login: React.FunctionComponent = () => {
 					if (response.status === 200) {
 						navigate("/");
 						dispatch(loadLogin(true));
+						return response.json();
 					} else {
 						setError(true);
 					}
+				})
+				.catch((error: any | unknown) => {
+					setError(true);
+					console.error(error);
+				})
+				.then((response) => {
+					dispatch(loadUser(response.data.user));
 				})
 				.catch((error: any | unknown) => {
 					setError(true);

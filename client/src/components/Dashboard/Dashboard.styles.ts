@@ -9,7 +9,7 @@ export const boxStyles = {
 };
 
 export const inputStyles = {
-	width: "40%",
+	width: "100%",
 };
 
 export const buttonStyles = {
@@ -25,4 +25,27 @@ export const searchStyles = {
 	flexDirection: "row",
 	alignItems: "center",
 	justifyContent: "center",
+};
+
+export const labelBoxStyles = {
+	maxWidth: "60%",
+	display: "flex",
+	flexDirection: "row",
+	flexFlow: "row wrap",
+	alignItems: "center",
+	justifyContent: "center",
+	border: "1px solid black",
+	padding: "20px 40px",
+	borderRadius: "10px",
+	margin: "20px",
+};
+
+export const labelStyles = {
+	display: "flex",
+	flexDirection: "row",
+	background: "#e3f3ff",
+	border: "1px solid black",
+	padding: "5px",
+	borderRadius: "10px",
+	margin: "5px",
 };
