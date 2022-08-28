@@ -4,8 +4,6 @@ export const boxStyles = {
 	alignItems: "center",
 	justifyContent: "center",
 	width: "100%",
-	height: "100%",
-	background: "#bdd7ff",
 };
 
 export const inputStyles = {
@@ -64,11 +62,11 @@ export const smallChatBoxStyles = {
 	padding: "20px 40px",
 	borderRadius: "10px",
 	margin: "20px",
+	cursor: "pointer",
+	background: "#5175b0",
 };
 
 export const chatBoxStyles = {
-	top: "14rem",
-	position: "absolute",
 	width: "90%",
 	display: "flex",
 	flexDirection: "column",
@@ -77,6 +75,7 @@ export const chatBoxStyles = {
 	border: "1px solid black",
 	padding: "20px 40px",
 	borderRadius: "10px",
-	margin: "20px",
-	background: "white",
+	marginTop: "14rem",
+	marginBottom: "2rem",
+	background: "#7499d6",
 };

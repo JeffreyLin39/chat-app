@@ -45,7 +45,6 @@ const Login: React.FunctionComponent = () => {
 			})
 				.then((response: any) => {
 					if (response.status === 200) {
-						navigate("/");
 						dispatch(loadLogin(true));
 						return response.json();
 					} else {
@@ -58,6 +57,7 @@ const Login: React.FunctionComponent = () => {
 				})
 				.then((response) => {
 					dispatch(loadUser(response.data.user));
+					navigate("/");
 				})
 				.catch((error: any | unknown) => {
 					setError(true);

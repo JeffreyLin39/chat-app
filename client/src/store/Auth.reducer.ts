@@ -22,9 +22,11 @@ export const authSlice = createSlice({
 			state.user = action.payload;
 		},
 		loadChat: (state, action: PayloadAction<string>) => {
-			const newUser = state.user;
-			newUser?.chat.push(action.payload);
-			state.user = newUser;
+			if (state.user) {
+				const newUser = state.user;
+				newUser.chat = [...state.user?.chat, action.payload];
+				state.user = newUser;
+			}
 		},
 	},
 });

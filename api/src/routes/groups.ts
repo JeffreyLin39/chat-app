@@ -4,6 +4,12 @@ const router = require("express").Router();
 const Chat = require("../models/chat");
 const Account = require("../models/account");
 
+const io = require("socket.io")(8800, {
+	cors: {
+		origin: "*",
+	},
+});
+
 router.post(
 	"/createChat",
 	async (req: Request<unknown, INewChat>, res: Response) => {
@@ -29,6 +35,17 @@ router.post(
 							},
 						}
 					);
+
+					for (let i = 0; i < members.length; i++) {
+						await Account.updateOne(
+							{ _id: members[i] },
+							{
+								$push: {
+									chat: response._id.toString(),
+								},
+							}
+						);
+					}
 					res.status(200).json({
 						status: 200,
 						message: "Action accepted",
@@ -152,7 +169,9 @@ router.put("/sendMessage/:id", async (req: Request, res: Response) => {
 				},
 			}
 		)
-			.then(() => {
+			.then(async () => {
+				const chat = await Chat.findOne({ _id: id });
+				io.emit(`${id}`, chat);
 				res.status(200).json({
 					status: 200,
 					message: "Action accepted",

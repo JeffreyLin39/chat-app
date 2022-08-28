@@ -27,7 +27,7 @@ router.post(
 					res.status(200).json({
 						status: 200,
 						message: "Action accepted",
-						data: { UID: response._id.toString() },
+						data: { user: response },
 					});
 				})
 				.catch((error: any | unknown) => {

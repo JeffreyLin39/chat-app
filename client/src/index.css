@@ -1,4 +1,7 @@
 body {
+	background: #bdd7ff;
+	overflow-x: hidden;
+	overflow-y: scroll;
 	width: 100vw;
 	height: 100vh;
 	margin: 0;

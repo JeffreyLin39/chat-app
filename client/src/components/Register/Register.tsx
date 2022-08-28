@@ -62,7 +62,6 @@ const Register: React.FunctionComponent = () => {
 			})
 				.then((response: any) => {
 					if (response.status === 200) {
-						navigate("/");
 						dispatch(loadLogin(true));
 						return response.json();
 					} else {
@@ -75,6 +74,7 @@ const Register: React.FunctionComponent = () => {
 				})
 				.then((response) => {
 					dispatch(loadUser(response.data.user));
+					navigate("/");
 				})
 				.catch((error: any | unknown) => {
 					setError(true);
@@ -115,7 +115,6 @@ const Register: React.FunctionComponent = () => {
 					id="outlined-basic"
 					label="Last Name"
 					variant="outlined"
-					type="password"
 					sx={inputStyles}
 					value={lastName}
 					onChange={handleLastNameChange}

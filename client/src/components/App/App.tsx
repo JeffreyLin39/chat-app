@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import Dashboard from "../Dashboard";
 import Login from "../Login";
 import Register from "../Register";
+import Chat from "../Chat";
 interface IAppProps {}
 
 const App: React.FunctionComponent<IAppProps> = (
@@ -23,6 +24,7 @@ const App: React.FunctionComponent<IAppProps> = (
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
+						<Route path="/chat/:id" element={<Chat />} />
 					</Routes>
 				</AuthProvider>
 			</BrowserRouter>

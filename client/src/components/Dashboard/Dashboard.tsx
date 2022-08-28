@@ -1,5 +1,7 @@
 // React
 import * as React from "react";
+// React Router
+import { useNavigate } from "react-router-dom";
 // Material UI
 import { Box, Autocomplete, TextField, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -7,7 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/Auth.store";
 import { useDispatch } from "react-redux";
-import { loadChat } from "../../store/Auth.reducer";
+import { loadChat, loadUser } from "../../store/Auth.reducer";
 
 // Styles
 import {
@@ -50,7 +52,7 @@ export interface IChat {
 const Dashboard: React.FunctionComponent = () => {
 	//TODO: show loading screen if login is false
 	const dispatch = useDispatch();
-
+	const navigate = useNavigate();
 	const user: IAccountRegistration | undefined = useSelector(
 		(state: RootState) => state.AuthReducer.user
 	);
@@ -90,12 +92,15 @@ const Dashboard: React.FunctionComponent = () => {
 				.catch((error) => console.error(error))
 				.then((response: any) => {
 					dispatch(loadChat(response.data.ID));
-				});
+					setAddedUsers([]);
+				})
+				.catch((error) => console.error(error));
 		}
 	};
 	const handleSetAutofill = (value: string | null) => {
+		debugger;
 		if (value) {
-			setAutofillValue(value);
+			setAutofillValue("");
 			const user: IAccountRegistration | undefined = searchResult.find(
 				(user) => user.email === value
 			);
@@ -106,27 +111,28 @@ const Dashboard: React.FunctionComponent = () => {
 	};
 
 	React.useEffect(() => {
-		const getSearchResults = setTimeout(() => {
-			if (process.env.REACT_APP_BASE_API_URL) {
-				fetch(
-					`${process.env.REACT_APP_BASE_API_URL}/auth/searchUser?searchQuery=${searchValue}`
-				)
-					.then((response: any) => response.json())
-					.catch((error) => console.error(error))
-					.then((response: any) => {
-						setSearchOptions(
-							response.data.map((user: IAccountRegistration) => user.email)
-						);
-						setSearchResult(response.data);
-					});
-			}
-		}, 1000);
-
-		return () => clearTimeout(getSearchResults);
-	}, [searchValue]);
+		if (process.env.REACT_APP_BASE_API_URL) {
+			fetch(
+				`${process.env.REACT_APP_BASE_API_URL}/auth/searchUser?searchQuery=${searchValue}`
+			)
+				.then((response: any) => response.json())
+				.catch((error) => console.error(error))
+				.then((response: any) => {
+					const array = response.data.map(
+						(user: IAccountRegistration) => user.email
+					);
+					const userIndex = array.indexOf(user?.email);
+					if (userIndex > -1) {
+						array.splice(userIndex, 1);
+					}
+					setSearchOptions(array);
+					setSearchResult(response.data);
+				});
+		}
+	}, [searchValue, user?.email]);
 
 	React.useEffect(() => {
-		setChat([]);
+		const newChats: IChat[] = [];
 		if (user?.chat) {
 			for (let i = 0; i < user.chat.length; i++) {
 				fetch(
@@ -134,11 +140,14 @@ const Dashboard: React.FunctionComponent = () => {
 				)
 					.then((response: any) => response.json())
 					.catch((error) => console.error(error))
-					.then((response: any) =>
-						setChat((currentChat) => [...currentChat, response.data.chat])
-					);
+					.then((response: any) => {
+						newChats.push(response.data.chat);
+					});
 			}
 		}
+		setTimeout(() => {
+			setChat(newChats);
+		}, 500);
 	}, [user?.chat]);
 
 	return user ? (
@@ -152,9 +161,6 @@ const Dashboard: React.FunctionComponent = () => {
 					options={searchOptions}
 					sx={{ width: "40%" }}
 					freeSolo
-					onClick={(option) => {
-						console.log(option);
-					}}
 					renderInput={(params) => (
 						<TextField
 							{...params}
@@ -169,10 +175,29 @@ const Dashboard: React.FunctionComponent = () => {
 				/>
 				<Button
 					sx={buttonStyles}
-					onClick={createChat}
+					onClick={() => {
+						createChat();
+					}}
 					disabled={addedUsers.length === 0}
 				>
 					Create Chat
+				</Button>
+				<Button
+					sx={buttonStyles}
+					onClick={() => {
+						setChat([...chat]);
+						fetch(
+							`${process.env.REACT_APP_BASE_API_URL}/auth/getAccount/${user._id}`
+						)
+							.then((response) => response.json())
+							.catch((error) => console.error(error))
+							.then((response) => {
+								loadUser(response.data.user);
+							})
+							.catch((error) => console.error(error));
+					}}
+				>
+					Refresh
 				</Button>
 			</Box>
 			{addedUsers.length > 0 && (
@@ -194,22 +219,31 @@ const Dashboard: React.FunctionComponent = () => {
 					))}
 				</Box>
 			)}
-			<Box sx={chatBoxStyles}>
-				{chat.map((chat) => {
-					return (
-						<Box key={chat._id} sx={smallChatBoxStyles}>
+
+			{chat.length > 0 ? (
+				<Box sx={chatBoxStyles}>
+					{chat.map((chat) => (
+						<Box
+							key={chat._id}
+							sx={smallChatBoxStyles}
+							onClick={() => {
+								navigate(`/chat/${chat._id}`);
+							}}
+						>
 							<Box sx={labelStyles}>
 								<span>{user.email}</span>
 							</Box>
 							{chat.members.map((user) => (
-								<Box sx={labelStyles}>
+								<Box sx={labelStyles} key={user._id}>
 									<span>{user.email}</span>
 								</Box>
 							))}
 						</Box>
-					);
-				})}
-			</Box>
+					))}
+				</Box>
+			) : (
+				<></>
+			)}
 		</Box>
 	) : (
 		<></>
