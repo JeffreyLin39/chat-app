@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { INewChat } from "../interfaces/chat";
 const router = require("express").Router();
 const Chat = require("../models/chat");
+const Account = require("../models/account");
 
 router.post(
 	"/createChat",
@@ -19,11 +20,19 @@ router.post(
 
 			chat
 				.save()
-				.then((response: any) => {
+				.then(async (response: any) => {
+					await Account.updateOne(
+						{ _id: owner },
+						{
+							$push: {
+								chat: response._id.toString(),
+							},
+						}
+					);
 					res.status(200).json({
 						status: 200,
 						message: "Action accepted",
-						data: { "ID:": response._id.toString() },
+						data: { ID: response._id.toString() },
 					});
 				})
 				.catch((error: any | unknown) => {

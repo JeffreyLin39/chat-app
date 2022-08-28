@@ -4,13 +4,19 @@ export interface INewChat {
 }
 export interface IChat {
 	owner: string;
-	members: string[];
+	members: [
+		{
+			email: string;
+			_id: string;
+		}
+	];
 	chat: [
 		{
 			sender: string;
 			value: string;
 		}
 	];
+	_id: string;
 }
 
 export interface IMembers {

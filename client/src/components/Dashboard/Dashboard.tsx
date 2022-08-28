@@ -6,6 +6,8 @@ import CloseIcon from "@mui/icons-material/Close";
 // Store
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/Auth.store";
+import { useDispatch } from "react-redux";
+import { loadChat } from "../../store/Auth.reducer";
 
 // Styles
 import {
@@ -15,6 +17,8 @@ import {
 	searchStyles,
 	labelStyles,
 	labelBoxStyles,
+	chatBoxStyles,
+	smallChatBoxStyles,
 } from "./Dashboard.styles";
 
 export interface IAccountRegistration {
@@ -22,11 +26,31 @@ export interface IAccountRegistration {
 	lastName: string;
 	email: string;
 	password: string;
+	chat: string[];
+	_id: string;
+}
+
+export interface IChat {
+	owner: string;
+	members: [
+		{
+			email: string;
+			_id: string;
+		}
+	];
+	chat: [
+		{
+			sender: string;
+			value: string;
+		}
+	];
 	_id: string;
 }
 
 const Dashboard: React.FunctionComponent = () => {
 	//TODO: show loading screen if login is false
+	const dispatch = useDispatch();
+
 	const user: IAccountRegistration | undefined = useSelector(
 		(state: RootState) => state.AuthReducer.user
 	);
@@ -40,13 +64,13 @@ const Dashboard: React.FunctionComponent = () => {
 	const [addedUsers, setAddedUsers] = React.useState<IAccountRegistration[]>(
 		[]
 	);
+	const [chat, setChat] = React.useState<IChat[]>([]);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(event.target.value);
 	};
 
 	const createChat = () => {
-		console.log(user?._id);
 		if (user?._id) {
 			fetch(`${process.env.REACT_APP_BASE_API_URL}/groups/createChat`, {
 				method: "POST",
@@ -56,13 +80,16 @@ const Dashboard: React.FunctionComponent = () => {
 				},
 				body: JSON.stringify({
 					owner: user._id,
-					members: addedUsers.map((user) => user._id),
+					members: addedUsers.map((user) => ({
+						email: user.email,
+						_id: user._id,
+					})),
 				}),
 			})
 				.then((response: any) => response.json())
 				.catch((error) => console.error(error))
 				.then((response: any) => {
-					console.log(response);
+					dispatch(loadChat(response.data.ID));
 				});
 		}
 	};
@@ -93,10 +120,26 @@ const Dashboard: React.FunctionComponent = () => {
 						setSearchResult(response.data);
 					});
 			}
-		}, 3000);
+		}, 1000);
 
 		return () => clearTimeout(getSearchResults);
 	}, [searchValue]);
+
+	React.useEffect(() => {
+		setChat([]);
+		if (user?.chat) {
+			for (let i = 0; i < user.chat.length; i++) {
+				fetch(
+					`${process.env.REACT_APP_BASE_API_URL}/groups/getChat/${user.chat[i]}`
+				)
+					.then((response: any) => response.json())
+					.catch((error) => console.error(error))
+					.then((response: any) =>
+						setChat((currentChat) => [...currentChat, response.data.chat])
+					);
+			}
+		}
+	}, [user?.chat]);
 
 	return user ? (
 		<Box sx={boxStyles}>
@@ -151,6 +194,22 @@ const Dashboard: React.FunctionComponent = () => {
 					))}
 				</Box>
 			)}
+			<Box sx={chatBoxStyles}>
+				{chat.map((chat) => {
+					return (
+						<Box key={chat._id} sx={smallChatBoxStyles}>
+							<Box sx={labelStyles}>
+								<span>{user.email}</span>
+							</Box>
+							{chat.members.map((user) => (
+								<Box sx={labelStyles}>
+									<span>{user.email}</span>
+								</Box>
+							))}
+						</Box>
+					);
+				})}
+			</Box>
 		</Box>
 	) : (
 		<></>

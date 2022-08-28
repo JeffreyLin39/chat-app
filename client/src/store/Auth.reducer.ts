@@ -21,9 +21,14 @@ export const authSlice = createSlice({
 		loadUser: (state, action: PayloadAction<IAccountRegistration>) => {
 			state.user = action.payload;
 		},
+		loadChat: (state, action: PayloadAction<string>) => {
+			const newUser = state.user;
+			newUser?.chat.push(action.payload);
+			state.user = newUser;
+		},
 	},
 });
 
-export const { loadLogin, loadUser } = authSlice.actions;
+export const { loadLogin, loadUser, loadChat } = authSlice.actions;
 
 export default authSlice.reducer;

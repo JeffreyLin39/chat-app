@@ -20,6 +20,8 @@ export const buttonStyles = {
 };
 
 export const searchStyles = {
+	position: "absolute",
+	top: "1.5rem",
 	width: "100%",
 	display: "flex",
 	flexDirection: "row",
@@ -28,6 +30,8 @@ export const searchStyles = {
 };
 
 export const labelBoxStyles = {
+	top: "7rem",
+	position: "absolute",
 	maxWidth: "60%",
 	display: "flex",
 	flexDirection: "row",
@@ -48,4 +52,31 @@ export const labelStyles = {
 	padding: "5px",
 	borderRadius: "10px",
 	margin: "5px",
+};
+export const smallChatBoxStyles = {
+	maxWidth: "60%",
+	display: "flex",
+	flexDirection: "row",
+	flexFlow: "row wrap",
+	alignItems: "center",
+	justifyContent: "center",
+	border: "1px solid black",
+	padding: "20px 40px",
+	borderRadius: "10px",
+	margin: "20px",
+};
+
+export const chatBoxStyles = {
+	top: "14rem",
+	position: "absolute",
+	width: "90%",
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "start",
+	justifyContent: "center",
+	border: "1px solid black",
+	padding: "20px 40px",
+	borderRadius: "10px",
+	margin: "20px",
+	background: "white",
 };
