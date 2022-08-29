@@ -10,6 +10,8 @@ Clone this repo, and navigate into the api directory and run
   npm i
 ```
 
+Create a .env in this folder with a variable, DBURI, and set it equal to your MongoDB connection string
+
 Then run
 ```bash
   npm run dev
@@ -19,6 +21,8 @@ In a seperate terminal windowm navigate into the client directory and run the sa
 ```bash
   npm i
 ```
+
+Create a .env in this folder with a variable, REACT_APP_BASE_API_URL, and set it equal to http://localhost:8080/api/v1, unless you changed the port for the API
 
 Then run
 ```bash
